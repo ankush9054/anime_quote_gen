@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./Quote.css";
+import "./App.css";
 
-function App() {
+const App = () => {
+  const [quote, setQuote] = useState("");
+  const [author, setAuthor] = useState("");
+
+  const quoteAPI = async () => {
+    let arrayofQuotes = [];
+    try {
+      await axios
+        .get("https://animechan.vercel.app/api/random")
+        .then((response) => {
+          const data = response.data;
+          arrayofQuotes = data;
+        });
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      setQuote(arrayofQuotes.quote);
+      setAuthor(arrayofQuotes.character);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    quoteAPI();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="quoteBox">
+        <div className="container">
+          <div className="quote">
+            <h2>{quote}</h2>
+          </div>
+          <div className="quoteButton">
+            <button onClick={quoteAPI}>New Quote</button>
+          </div>
+          <div className="author">
+            <h4>{author}</h4>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default App;
